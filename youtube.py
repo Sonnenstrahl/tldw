@@ -394,7 +394,7 @@ class Summarizer:
         return summaries
 
 def main():
-    dotenv.load_dotenv()
+    dotenv.load_dotenv('/opt/.env')
 
     parser = argparse.ArgumentParser(description='Extract YouTube video information')
     parser.add_argument('url', help='YouTube video URL')
