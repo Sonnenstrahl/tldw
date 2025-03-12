@@ -10,6 +10,8 @@ import traceback
 
 app = Flask(__name__)
 app.config['PROXY_URL'] = None  # Default value
+app.config['COOKIES'] = None  # Default value
+
 
 cors = CORS(app)  # Enable CORS for all routes
 
@@ -153,7 +155,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Server configuration')
     parser.add_argument('--port', type=int, default=5000, help='Port number (default: 5000)')
     parser.add_argument('--proxy', default=os.getenv('PROXY_URL'), help='Proxy URL (default: PROXY_URL environment variable or None)')
+    parser.add_argument('--cookies', default=os.getenv('COOKIES'), help='COOKIES FILE (default: COOKIES environment variable or None)')
     args = parser.parse_args()
     app.config['PROXY_URL'] = args.proxy
+    app.config['COOKIES'] = args.cookies
     print(f'Serving on port {args.port}')
     serve(app, host="0.0.0.0", port=args.port)
+

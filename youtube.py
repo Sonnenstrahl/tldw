@@ -28,23 +28,29 @@ def validate_youtube_url(url: str) -> bool:
         return False
 
 class VideoExtractor:
-    def __init__(self, proxy: Optional[str] = None):
+    def __init__(self, proxy: Optional[str] = None, cookies: Optional[str] = None):
         ensure_cache_dir()
 
         self.ydl_opts = {
             'writesubtitles': True,
             'writeannotations': True,
             'writeautomaticsub': True,
-            'subtitleslangs': ['en', 'en-US', 'en-CA'],  # Focus on English captions for now
-            'skip_download': True,  # Don't download the video file
+            'subtitleslangs': ['en', 'en-US', 'en-CA'],
+            'skip_download': True,
             'quiet': False,
             'no_warnings': False,
-            'no-playlist': True
+            'noplaylist': True
         }
 
         if proxy:
             print(f'Setting proxy: {proxy[:10]}...')
             self.ydl_opts['proxy'] = proxy
+
+        if cookies:
+            if not os.path.isfile(cookies):
+                raise ValueError(f"Cookie file '{cookies}' not found")
+            print(f'Using cookies from: {cookies}')
+            self.ydl_opts['cookiefile'] = cookies
 
     def get_captions_by_priority(self, info: Dict) -> Optional[Dict]:
         """
@@ -394,9 +400,10 @@ def main():
     parser.add_argument('url', help='YouTube video URL')
     parser.add_argument('--output', '-o', help='Output file path (optional)')
     parser.add_argument('--proxy', '-x', help='Proxy URL (optional)')
+    parser.add_argument('--cookies', '-c', help='Path to a Netscape-formatted cookie file (optional)')
     args = parser.parse_args()
 
-    extractor = VideoExtractor(proxy=args.proxy)
+    extractor = VideoExtractor(proxy=args.proxy,cookies=args.cookies)
     summarizer = Summarizer()
 
     # Download metadata
