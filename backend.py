@@ -74,7 +74,7 @@ def summarize_video():
         }), 400
     
     try:
-        extractor = VideoExtractor(proxy=app.config['PROXY_URL'])
+        extractor = VideoExtractor(proxy=app.config['PROXY_URL'],cookies=app.config['COOKIES'])
         summarizer = Summarizer()
 
         # Download metadata
